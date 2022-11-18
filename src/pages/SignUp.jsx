@@ -3,23 +3,60 @@ import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link, NavLink } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { db } from "../firebase";
+import { doc, limitToLast, serverTimestamp, setDoc } from "firebase/firestore"
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+ 
 
 export default function SignUp() {
-  const { showPassword, setShowPassword } = useState(true);
+  const { showPassword, setShowPassword } = useState(false);
 
   const [formData, setFormData] = useState({
-    name:"",
+    name: "",
     email: "",
     password: "",
   });
 
-  const { name,email, password } = formData;
-
+  const { name, email, password } = formData;
+  const navigate=useNavigate()
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  }
+
+  async function onSubmit(e) {
+     e.preventDefault();
+
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      )
+       
+
+      updateProfile(auth.currentUser, {
+        displayName: name
+      })
+      const user = userCredential.user;
+       
+       const formDataCopy = {...formData }
+       delete formDataCopy.password
+       formDataCopy.timestamp=serverTimestamp();
+       toast.success("signup was succesful")
+
+       await setDoc(doc(db, "users",user.uid), formDataCopy)
+
+       navigate("/")
+    } catch (error) {
+    
+      toast.error('something went wrong with the registration')
+    }
   }
 
   return (
@@ -34,8 +71,8 @@ export default function SignUp() {
           />
         </div>
         <div className="w-full  md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form>
-          <input
+          <form onSubmit={onSubmit}>
+            <input
               className="w-full px-4 py-2 text-gray-700 text-xl bg-white border-gray-700 rounded-sm transition ease-in-out mb-6"
               type="text"
               id="name"
@@ -75,7 +112,7 @@ export default function SignUp() {
             </div>
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg mb-6">
               <p>
-                 have an account?
+                have an account?
                 <Link
                   to="/Sign-In"
                   className="text-red-600 hover:text-red-800 transition duration ease-in-out"
@@ -87,15 +124,14 @@ export default function SignUp() {
                 <Link to="/forgot-Password">Forgot Password?</Link>
               </p>
             </div>
-            <button className="w-full bg-blue-600 px-6 py-3 font-medium uppercase text-white hover:bg-blue-700 active:bg-blue-900">
-            sign up
-          </button>
-          <div className="flex items-center my-4 before:border-t before:flex-1 before:border-gray-300 after:border-t after:flex-1 after:border-gray-300">
-            <p className="text-center  uppercase semi-bold">or</p>
-          </div>
-          <OAuth/>
+            <button className="w-full bg-blue-600 px-6 py-3 font-medium uppercase text-white hover:bg-blue-700 active:bg-blue-900" type="submit">
+              sign up
+            </button>
+            <div className="flex items-center my-4 before:border-t before:flex-1 before:border-gray-300 after:border-t after:flex-1 after:border-gray-300">
+              <p className="text-center  uppercase semi-bold">or</p>
+            </div>
+            <OAuth />
           </form>
-         
         </div>
       </div>
     </section>
