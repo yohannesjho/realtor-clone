@@ -1,15 +1,14 @@
 import React from "react";
 import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import { Link, NavLink } from "react-router-dom";
+import { Link, useNavigate   } from "react-router-dom";
 import OAuth from "../components/OAuth";
-import { getAuth, signInWithEmailAndPassword,signIn} from "firebase/auth"
-import { async } from "@firebase/util";
+import { getAuth, signInWithEmailAndPassword,  } from "firebase/auth";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+ 
 
 export default function SignIn() {
-  const { showPassword, setShowPassword } = useState(true);
+  const { showPassword, setShowPassword } = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -17,32 +16,32 @@ export default function SignIn() {
   });
 
   const { email, password } = formData;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
   }
-  
 
-  async function onSubmit(e){
-    e.preventDefault()
-    
+  async function onSubmit(e) {
+    e.preventDefault();
+
     try {
       const auth = getAuth();
-      const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      
-    if(userCredential.user){
-       navigate("/")
-    }
-      
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      if (userCredential.user) {
+        navigate("/");
+      }
     } catch (error) {
-      toast.error("Bad user  Credential")
-      console.log(error.message)
+      toast.error("Bad user  Credential");
+       
     }
-
-
   }
 
   return (
@@ -57,7 +56,7 @@ export default function SignIn() {
           />
         </div>
         <div className="w-full  md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form  onSubmit={onSubmit}>
+          <form onSubmit={onSubmit}>
             <input
               className="w-full px-4 py-2 text-gray-700 text-xl bg-white border-gray-700 rounded-sm transition ease-in-out"
               type="email"
@@ -103,14 +102,13 @@ export default function SignIn() {
               </p>
             </div>
             <button className="w-full bg-blue-600 px-6 py-3 font-medium uppercase text-white hover:bg-blue-700 active:bg-blue-900">
-            sign in
-          </button>
-          <div className="flex items-center my-4 before:border-t before:flex-1 before:border-gray-300 after:border-t after:flex-1 after:border-gray-300">
-            <p className="text-center  uppercase semi-bold">or</p>
-          </div>
-          <OAuth/>
+              sign in
+            </button>
+            <div className="flex items-center my-4 before:border-t before:flex-1 before:border-gray-300 after:border-t after:flex-1 after:border-gray-300">
+              <p className="text-center  uppercase semi-bold">or</p>
+            </div>
+            <OAuth />
           </form>
-         
         </div>
       </div>
     </section>
