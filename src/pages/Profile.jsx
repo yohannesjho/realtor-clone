@@ -5,6 +5,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { db } from "../firebase";
+import { FcHome } from "react-icons/fc";
+import { Link } from "react-router-dom";
+
 export default function Profile() {
   const auth = getAuth();
   const navigate = useNavigate();
@@ -28,23 +31,23 @@ export default function Profile() {
     }));
   }
 
-  async function onSubmit(){
-     try {
-       if(auth.currentUser.displayName != name){
+  async function onSubmit() {
+    try {
+      if (auth.currentUser.displayName != name) {
         await updateProfile(auth.currentUser, {
           displayName: name,
-        })
-        const docRef = doc(db, "users", auth.currentUser.uid)
+        });
+        const docRef = doc(db, "users", auth.currentUser.uid);
 
-        await updateDoc(docRef,{
+        await updateDoc(docRef, {
           name,
-        })
+        });
 
-        toast.success("update is successful!")
-       }
-     } catch (error) {
-        toast.error("Could not update the profile!")
-     }
+        toast.success("update is successful!");
+      }
+    } catch (error) {
+      toast.error("Could not update the profile!");
+    }
   }
   return (
     <>
@@ -57,7 +60,9 @@ export default function Profile() {
             value={name}
             disabled={!changeDetail}
             onChange={onChange}
-            className= {`bg-white text-gray-700 px-4 rounded-md ${changeDetail && "bg-red-300 focus:bg-red-300"}`}
+            className={`bg-white text-gray-700 px-4 rounded-md ${
+              changeDetail && "bg-red-300 focus:bg-red-300"
+            }`}
           />
           <input
             type="email"
@@ -84,6 +89,18 @@ export default function Profile() {
             </p>
           </div>
         </form>
+      </div>
+
+      <div className="flex justify-center mt-6 ">
+        <button
+          type="submit"
+          className=" w-full sm:w-1/2 lg:w-1/3 my-4 mx-6 py-3  bg-blue-600 hover:bg-blue-700 transition duration-200 ease-in-out text-white uppercase rounded-md shadow-md hover:shadow-lg"
+        >
+          <Link to="/Create-lists" className="flex justify-center ">
+            <FcHome className="text-3xl mx-1 bg-red-200 rounded-full p-1" />
+            Sell or rent your house
+          </Link>
+        </button>
       </div>
     </>
   );
