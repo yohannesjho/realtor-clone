@@ -23,6 +23,7 @@ export default function Profile() {
     auth.signOut();
     navigate("/");
   }
+  
 
   function onChange(e) {
     setFormData((prevState) => ({
@@ -96,7 +97,7 @@ export default function Profile() {
           type="submit"
           className=" w-full sm:w-1/2 lg:w-1/3 my-4 mx-6 py-3  bg-blue-600 hover:bg-blue-700 transition duration-200 ease-in-out text-white uppercase rounded-md shadow-md hover:shadow-lg"
         >
-          <Link to="/Create-lists" className="flex justify-center ">
+          <Link to="/create-listing" className="flex justify-center ">
             <FcHome className="text-3xl mx-1 bg-red-200 rounded-full p-1" />
             Sell or rent your house
           </Link>
