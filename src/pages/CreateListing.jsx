@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import {
@@ -9,12 +9,19 @@ import {
 } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  orderBy,
+  query,
+  serverTimestamp,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import { Navigate, useNavigate } from "react-router";
 
 export default function CreateListing() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const auth = getAuth();
   const [geoLocationEnabled, setGeoLocationEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -132,33 +139,33 @@ export default function CreateListing() {
     }
 
     const imgUrls = await Promise.all(
-      [...images]
-        .map((image) => storeImage(image)))
-        .catch((error) => {
-          setLoading(false);
-          toast.error("images not uploaded");
-          return;
-        })
-    
+      [...images].map((image) => storeImage(image))
+    ).catch((error) => {
+      setLoading(false);
+      toast.error("images not uploaded");
+      return;
+    });
 
-     const formDataCopy = {
+    const formDataCopy = {
       ...formData,
       imgUrls,
       geolocation,
       timestamp: serverTimestamp(),
-     };
-     delete formDataCopy.images;
-     !formDataCopy.offer && delete formDataCopy.discountedPrice
-     const docRef = await addDoc(collection(db,'listings'),formDataCopy)
-     setLoading(false);
-     toast.success("Listing created");
-     navigate(`/category/${formDataCopy.type}/${docRef.id}`)
-
+      userRef: auth.currentUser.uid,
+    };
+    delete formDataCopy.images;
+    !formDataCopy.offer && delete formDataCopy.discountedPrice;
+    const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+    setLoading(false);
+    toast.success("Listing created");
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
   }
 
   if (loading) {
     return <Spinner />;
   }
+
+  
   return (
     <main className="  px-2 max-w-md mx-auto">
       <h1 className="text-center text-3xl font-medium mt-4">
