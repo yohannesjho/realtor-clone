@@ -12,6 +12,8 @@ import { getAuth } from "firebase/auth";
 import {
   addDoc,
   collection,
+  getDoc,
+  getDocs,
   orderBy,
   query,
   serverTimestamp,
@@ -23,8 +25,9 @@ import { Navigate, useNavigate } from "react-router";
 export default function CreateListing() {
   const navigate = useNavigate();
   const auth = getAuth();
+  const [listings, setListings] = useState(null);
   const [geoLocationEnabled, setGeoLocationEnabled] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
@@ -103,7 +106,7 @@ export default function CreateListing() {
     async function storeImage(image) {
       return new Promise((resolve, reject) => {
         const storage = getStorage();
-        const fileName = `${auth.currentUser.id}-${image.name}-${uuidv4()}`;
+        const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
         const storageRef = ref(storage, fileName);
         const uploadTask = uploadBytesResumable(storageRef, image);
         uploadTask.on(
@@ -145,6 +148,7 @@ export default function CreateListing() {
       toast.error("images not uploaded");
       return;
     });
+    console.log(imgUrls);
 
     const formDataCopy = {
       ...formData,
@@ -155,17 +159,19 @@ export default function CreateListing() {
     };
     delete formDataCopy.images;
     !formDataCopy.offer && delete formDataCopy.discountedPrice;
+    delete formDataCopy.latitude;
+    delete formDataCopy.longitude;
     const docRef = await addDoc(collection(db, "listings"), formDataCopy);
     setLoading(false);
     toast.success("Listing created");
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
   }
+  
 
   if (loading) {
     return <Spinner />;
   }
 
-  
   return (
     <main className="  px-2 max-w-md mx-auto">
       <h1 className="text-center text-3xl font-medium mt-4">
@@ -251,7 +257,7 @@ export default function CreateListing() {
             value={true}
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              !parking ? "bg-white text-black" : "bg-slate-600 text-white"
+              parking ? "bg-slate-600 text-white" : "bg-white text-black"
             }`}
           >
             Yes
@@ -432,7 +438,6 @@ export default function CreateListing() {
 
         <button
           type="submit"
-          onChange={onChange}
           className="w-full bg-blue-600 focus:bg-blue-700 px-4 py-2 mt-6 rounded-md text-white text-lg uppercase shadow-md focus:shadow-lg active-shadow-lg hover:shadow-lg hover:bg-blue-700 transition duration-150 ease-in-out mb-6"
         >
           create listing

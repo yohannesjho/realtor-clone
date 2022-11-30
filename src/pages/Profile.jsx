@@ -15,14 +15,14 @@ import { toast } from "react-toastify";
 import { db } from "../firebase";
 import { FcHome } from "react-icons/fc";
 import { Link } from "react-router-dom";
- 
+
 import ListingItem from "../components/ListingItem";
 
 export default function Profile() {
   const auth = getAuth();
   const navigate = useNavigate();
-  const [listings, setListings] = useState(null)
-  const [loading, setLoading] = useState(null)
+  const [listings, setListings] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [changeDetail, setChangeDetail] = useState(false);
   const [formData, setFormData] = useState({
@@ -85,7 +85,7 @@ export default function Profile() {
   }, [auth.currentUser.uid]);
   return (
     <>
-      <h1 className="text-center font-bold text-3xl mt-6">My profile</h1>
+      <h1 className="text-center font-bold text-3xl mt-6 mb-6">My profile</h1>
       <div className="flex justify-center   ">
         <form className="  flex flex-col space-y-5 w-full sm:w-1/2 lg:w-1/3  mt-4 mx-6    justify-center">
           <input
@@ -136,16 +136,18 @@ export default function Profile() {
           </Link>
         </button>
       </div>
-
       <div className="max-w-6xl px-3 mt-6 mx-auto">
-      {!loading && listings.length > 0 &&(
+        {!loading && listings.length > 0 && (
           <>
             <h2 className="text-2xl text-center font-semibold">My Listings</h2>
-            
-            <ul>
+            <ul className="sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl-grid-cols-5 mt-6 mb-6">
               {listings.map((listing) => (
-                <ListingItem key={listing.id} id={listing.id} listing={listing.data}/>
-              ) )}
+                <ListingItem
+                  key={listing.id}
+                  id={listing.id}
+                  listing={listing.data}
+                />
+              ))}
             </ul>
           </>
         )}
