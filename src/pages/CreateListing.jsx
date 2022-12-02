@@ -100,8 +100,10 @@ export default function CreateListing() {
 
     let geolocation = {};
     let location;
-    geolocation.lat = latitude;
-    geolocation.lng = longitude;
+    if (geoLocationEnabled) {
+      geolocation.lat = latitude;
+      geolocation.lng = longitude;
+    }
 
     async function storeImage(image) {
       return new Promise((resolve, reject) => {
@@ -166,7 +168,6 @@ export default function CreateListing() {
     toast.success("Listing created");
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
   }
-  
 
   if (loading) {
     return <Spinner />;
