@@ -167,6 +167,7 @@ export default function CreateListing() {
     setLoading(false);
     toast.success("Listing created");
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+     
   }
 
   if (loading) {
@@ -429,7 +430,7 @@ export default function CreateListing() {
           <input
             type="file"
             id="images"
-            accept=".jpg, .png, .jpeg"
+            accept=".jpg,.png,.jpeg"
             multiple
             required
             onChange={onChange}
