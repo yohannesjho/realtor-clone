@@ -430,7 +430,7 @@ export default function CreateListing() {
           <input
             type="file"
             id="images"
-            accept=".jpg,.png,.jpeg"
+           
             multiple
             required
             onChange={onChange}
