@@ -82,7 +82,7 @@ export default function Listing() {
         </p>
       )}
       <div className="flex flex-col md:flex-row max-w-6xl mx-auto m-4 p-4 lg:space-x-4 shadow-lg rounded-lg bg-white">
-        <div className=" w-full h-[200px] lg:h-[400px] ">
+        <div className=" w-full   ">
           <p className="text-2xl font-semibold my-3 text-blue-700  ">
             {listing.name} - $
             {listing.offer
@@ -114,8 +114,8 @@ export default function Listing() {
           </div>
 
           <p className="mb-3 font-semibold">
-            {" "}
-            <span className=" text-lg ">Description</span> -{" "}
+            
+            <span className=" text-lg ">Description</span>  
             {listing.description}
           </p>
 
@@ -149,8 +149,25 @@ export default function Listing() {
             <Contact userRef={listing.userRef} listing={listing} />
           )}
         </div>
-        <div className="  w-full h-[200px] lg:h-[400px] ">
-          
+        <div className=" w-full h-[200px] md:h-[400px] z-10 overflow-x-hidden mt-6 md:mt-0 md:ml-2">
+        <MapContainer
+            center={[listing.geolocation.lat, listing.geolocation.lng]}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker
+              position={[listing.geolocation.lat, listing.geolocation.lng]}
+            >
+              <Popup>
+                {listing.address}
+              </Popup>
+            </Marker>
+          </MapContainer>
         </div>
       </div>
     </main>

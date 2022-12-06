@@ -13,6 +13,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditListing"
 import Listing from "./pages/Listing";
+import Category from "./pages/Category";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           </Route>
 
           <Route path="/sign-in" element={<SignIn />}></Route>
+          <Route path="/category/:categoryName" element={<Category/>}></Route>
           <Route path="/sign-up" element={<SignUp />}></Route>
           <Route path="/forgot-password" element={<ForgotPassword />}></Route>
           <Route path="/offers" element={<Offer />}></Route>

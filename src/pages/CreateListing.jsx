@@ -100,7 +100,7 @@ export default function CreateListing() {
 
     let geolocation = {};
     let location;
-    if (geoLocationEnabled) {
+    if (!geoLocationEnabled) {
       geolocation.lat = latitude;
       geolocation.lng = longitude;
     }
