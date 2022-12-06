@@ -106,7 +106,7 @@ import { useParams } from "react-router";
             )}
               </>
             ) : (
-              <p>There are no current offer</p>
+              <p>There are no current offer {params.categoryName ==="rent" ? "places for rent" : "places for sale"}</p>
             )}
       </div>
     );
